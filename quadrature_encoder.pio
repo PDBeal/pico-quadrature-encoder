@@ -96,20 +96,19 @@ increment_cont:
 // if the application doesn't require a very high sampling rate. Passing zero
 // will set the clock to the maximum
 
-static inline void quadrature_encoder_program_init(PIO pio, uint sm, uint pin_a, uint pin_b, int max_step_rate)
+static inline void quadrature_encoder_program_init(PIO pio, uint sm, uint pin, int max_step_rate)
 {
-    pio_sm_set_consecutive_pindirs(pio, sm, pin_a, 1, false);
-    pio_sm_set_consecutive_pindirs(pio, sm, pin_b, 1, false);
-    pio_gpio_init(pio, pin_a);
-    pio_gpio_init(pio, pin_b);
+    pio_sm_set_consecutive_pindirs(pio, sm, pin, 2, false);
+    pio_gpio_init(pio, pin);
+    pio_gpio_init(pio, pin + 1);
 
-    gpio_pull_up(pin_a);
-    gpio_pull_up(pin_b);
+    gpio_pull_up(pin);
+    gpio_pull_up(pin + 1);
 
     pio_sm_config c = quadrature_encoder_program_get_default_config(0);
 
-    sm_config_set_in_pins(&c, pin_a); // for WAIT, IN
-    sm_config_set_jmp_pin(&c, pin_b); // for JMP
+    sm_config_set_in_pins(&c, pin); // for WAIT, IN
+    sm_config_set_jmp_pin(&c, pin); // for JMP
     // shift to left, autopull disabled
     sm_config_set_in_shift(&c, false, false, 32);
     // don't join FIFO's
@@ -131,6 +130,21 @@ static inline void quadrature_encoder_program_init(PIO pio, uint sm, uint pin_a,
 static inline int32_t quadrature_encoder_get_count(PIO pio, uint sm)
 {
     uint ret;
+    int n;
+
+    // if the FIFO has N entries, we fetch them to drain the FIFO,
+    // plus one entry which will be guaranteed to not be stale
+    n = pio_sm_get_rx_fifo_level(pio, sm) + 1;
+    while (n > 0) {
+        ret = pio_sm_get_blocking(pio, sm);
+        n--;
+    }
+    return ret;
+}
+
+static inline int16_t quadrature_encoder_get_count_int16(PIO pio, uint sm)
+{
+    uint16_t ret;
     int n;
 
     // if the FIFO has N entries, we fetch them to drain the FIFO,

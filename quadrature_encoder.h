@@ -26,20 +26,18 @@ public:
     /*!
      * \brief Constructor
      *
-     * \param pin_a: GPIO pin to connect the A phase of the encoder.
-     * \param pin_b: GPIO pin to connect the B phase of the encoder.
+     * \param pin_ab: GPIO pin to connect the A phase of the encoder. The B phase must be connected to the next pin.
      * \param pio: pio selected
      * \param sm: state machine selected
      */
-    quadrature_encoder(uint8_t pin_a, uint8_t pin_b, PIO pio, int sm);
+    quadrature_encoder(uint8_t pin_ab, PIO pio, int sm);
 
     /*!
      * \brief Constructor
      *
-     * \param pin_a: GPIO pin to connect the A phase of the encoder.
-     * \param pin_b: GPIO pin to connect the B phase of the encoder.
+     * \param pin_ab: GPIO pin to connect the A phase of the encoder. The B phase must be connected to the next pin.
      */
-    quadrature_encoder(uint8_t pin_a, uint8_t pin_b);
+    quadrature_encoder(uint8_t pin_ab);
 
     /*!
      * \brief Release memory (as needed):
@@ -58,6 +56,13 @@ public:
      */
     int getCount(void);
 
+    /*!
+     * \brief Returns the current encoder position
+     *
+     * \return Returns the current count of the quadrature encoder as a 16-bit integer
+     */
+    int16_t getCount_int16(void);
+
 private:
     // pio - 0 or 1
     PIO quadraturePio;
@@ -65,6 +70,5 @@ private:
     // pio state machine to use
     int quadratureSm;
 
-    uint8_t quadratureGpioA; // Pin for A phase of the encoder
-    uint8_t quadratureGpioB; // Pin for B phase of the encoder
+    uint8_t quadratureGpioAB; // Pin for A phase of the encoder. The B phase is the next consecutive pin.
 };

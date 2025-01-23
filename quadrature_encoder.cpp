@@ -9,15 +9,14 @@
 
 #include "quadrature_encoder.h"
 
-quadrature_encoder::quadrature_encoder(uint8_t pin_a, uint8_t pin_b, PIO pio, int sm)
+quadrature_encoder::quadrature_encoder(uint8_t pin_ab, PIO pio, int sm)
 {
     quadratureSm = sm;
     quadraturePio = pio;
-    quadratureGpioA = pin_a;
-    quadratureGpioB = pin_b;
+    quadratureGpioAB = pin_ab;
 }
 
-quadrature_encoder::quadrature_encoder(uint8_t pin_a, uint8_t pin_b)
+quadrature_encoder::quadrature_encoder(uint8_t pin_ab)
 {
     PIO pio = pio0;
     int sm;
@@ -32,8 +31,7 @@ quadrature_encoder::quadrature_encoder(uint8_t pin_a, uint8_t pin_b)
 
     quadratureSm = sm;
     quadraturePio = pio;
-    quadratureGpioA = pin_a;
-    quadratureGpioB = pin_b;
+    quadratureGpioAB = pin_ab;
 }
 
 // Release memory (as needed):
@@ -48,10 +46,15 @@ void quadrature_encoder::begin()
     // we don't really need to keep the offset, as this program must be loaded
     // at offset 0
     uint offset = pio_add_program(quadraturePio, &quadrature_encoder_program);
-    quadrature_encoder_program_init(quadraturePio, quadratureSm, quadratureGpioA, quadratureGpioB, 0);
+    quadrature_encoder_program_init(quadraturePio, quadratureSm, quadratureGpioAB, 0);
 }
 
 int quadrature_encoder::getCount()
 {
     return quadrature_encoder_get_count(quadraturePio, quadratureSm);
+}
+
+int16_t quadrature_encoder::getCount_int16()
+{
+    return quadrature_encoder_get_count_int16(quadraturePio, quadratureSm);
 }
