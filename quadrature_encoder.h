@@ -19,7 +19,7 @@
 // work anyway.
 //
 
-class quadrature_encoder
+class QuadratureEncoder
 {
 
 public:
@@ -27,22 +27,22 @@ public:
      * \brief Constructor
      *
      * \param pin_ab: GPIO pin to connect the A phase of the encoder. The B phase must be connected to the next pin.
-     * \param pio: pio selected
-     * \param sm: state machine selected
      */
-    quadrature_encoder(uint8_t pin_ab, PIO pio, int sm);
+    QuadratureEncoder(uint8_t pin_ab);
 
     /*!
      * \brief Constructor
      *
      * \param pin_ab: GPIO pin to connect the A phase of the encoder. The B phase must be connected to the next pin.
+     * \param pio: pio selected
+     * \param sm: state machine selected
      */
-    quadrature_encoder(uint8_t pin_ab);
+    QuadratureEncoder(uint8_t pin_ab, PIO pio, int sm);
 
     /*!
      * \brief Release memory (as needed):
      */
-    virtual ~quadrature_encoder();
+    virtual ~QuadratureEncoder();
 
     /*!
      * \brief Initialize the class instance after calling constructor
