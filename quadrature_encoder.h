@@ -56,13 +56,6 @@ public:
      */
     int getCount(void);
 
-    /*!
-     * \brief Returns the current encoder position
-     *
-     * \return Returns the current count of the quadrature encoder as a 16-bit integer
-     */
-    int16_t getCount_int16(void);
-
 private:
     // pio - 0 or 1
     PIO quadraturePio;

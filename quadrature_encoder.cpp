@@ -48,7 +48,3 @@ int QuadratureEncoder::getCount()
     return quadrature_encoder_get_count(quadraturePio, quadratureSm);
 }
 
-int16_t QuadratureEncoder::getCount_int16()
-{
-    return quadrature_encoder_get_count_int16(quadraturePio, quadratureSm);
-}
